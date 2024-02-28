@@ -16,19 +16,19 @@ inputs:
     ecr-dockerfile-name:
         required: false
         default: Dockerfile
-    # docker-container-port:
-    #     required: true
-    # docker-container-name:
-    #     required: true
-    # ssh-host:
-    #     required: true
-    # ssh-username:
-    #     required: true
-    # ssh-private-key:
-    #     required: true
-    # ssh-port:
-    #     required: false
-    #     default: 22
+    docker-container-port:
+        required: true
+    docker-container-name:
+        required: true
+    ssh-host:
+        required: true
+    ssh-username:
+        required: true
+    ssh-private-key:
+        required: true
+    ssh-port:
+        required: false
+        default: 22
 
 runs:
     using: composite
@@ -60,3 +60,23 @@ runs:
               docker buildx build --platform=linux/amd64 -t $docker_image -f $dockerfile .
               docker push $docker_image
           shell: bash
+
+        - name: Run Server
+          uses: appleboy/ssh-action@v0.1.10
+          env:
+              docker_image: ${{ env.docker_image }}
+              docker_container_port: ${{ inputs.docker-container-port }}
+              docker_container_name: ${{ inputs.docker-container-name }}
+          with:
+              host: ${{ inputs.ssh-host }}
+              username: ${{ inputs.ssh-username }}
+              key: ${{ inputs.ssh-private-key }}
+              port: ${{ inputs.ssh-port }}
+              envs: docker_image,docker_container_port,docker_container_name
+              script_stop: true
+              script: |
+                  docker stop $(docker ps -qa ) 2>/dev/null \
+                  && docker rm $(docker ps -qa ) 2>/dev/null \
+                  && docker pull $docker_image \
+                  && docker run -d -p 80:$docker_container_port --name $docker_container_port $docker_image \
+                  && docker image prune -fa 2>/dev/null
