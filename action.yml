@@ -1,0 +1,12 @@
+name: Docker Deploy
+description: Deploying a web server on an EC2 instance using Docker
+inputs:
+    username:
+        required: true
+
+runs:
+    using: composite
+    steps:
+        - name: Echo username
+          run: echo ${{ inputs.username }}
+          shell: bash
