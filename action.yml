@@ -78,5 +78,5 @@ runs:
                   docker stop $(docker ps -qa ) 2>/dev/null \
                   && docker rm $(docker ps -qa ) 2>/dev/null \
                   && docker pull $docker_image \
-                  && docker run -d -p 80:$docker_container_port --name $docker_container_port $docker_image \
+                  && docker run -d -p 80:$docker_container_port --name $docker_container_name $docker_image \
                   && docker image prune -fa 2>/dev/null
