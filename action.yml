@@ -90,7 +90,7 @@ runs:
                   fi
 
                   docker stop $(docker ps -aq) 2>/dev/null \
-                  &&  docker rm $(docker ps -aq) 2>/dev/null
+                  &&  docker rm $(docker ps -aq) 2>/dev/null \
                   && docker pull $IMAGE_NAME \
                   && docker run -d -p 80:$CONTAINER_PORT --name $CONTAINER_NAME $ENV_FILE_OPTION $IMAGE_NAME \
                   && docker image prune -fa 2>/dev/null
