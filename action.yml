@@ -58,13 +58,13 @@ runs:
           run: echo "docker_image=$registry/$repository:$image_tag" >> $GITHUB_ENV
           shell: bash
 
-        - name: Build, tag, and push docker image to Amazon ECR
-          env:
-              docker_image: ${{ env.docker_image }}
-              dockerfile: ${{ inputs.ecr-dockerfile-name }}
-          run: |
-              docker buildx build --platform=linux/amd64 --push -t $docker_image -f $dockerfile .
-          shell: bash
+        # - name: Build, tag, and push docker image to Amazon ECR
+        #   env:
+        #       docker_image: ${{ env.docker_image }}
+        #       dockerfile: ${{ inputs.ecr-dockerfile-name }}
+        #   run: |
+        #       docker buildx build --platform=linux/amd64 --push -t $docker_image -f $dockerfile .
+        #   shell: bash
 
         - name: Run Server
           uses: appleboy/ssh-action@v1.0.3
@@ -93,18 +93,20 @@ runs:
                     ENV_FILE_OPTION=""
                   fi
 
-                  CONTAINER_IDS=$(docker ps -qa)
+                  echo $ENV_FILE_OPTION
 
-                  if [ -n "$CONTAINER_IDS" ]; then
-                    echo "foo"
-                    docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
-                  fi
+              #   CONTAINER_IDS=$(docker ps -qa)
 
-                  echo "boo"
-                  docker pull $IMAGE_NAME
+              #   if [ -n "$CONTAINER_IDS" ]; then
+              #     echo "foo"
+              #     docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
+              #   fi
 
-                  echo "a"
-                  docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION --name $CONTAINER_NAME $IMAGE_NAME
-                  echo "b"
-                  docker image prune -fa
-                  echo "c"
+              #   echo "boo"
+              #   docker pull $IMAGE_NAME
+
+              #   echo "a"
+              #   docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION --name $CONTAINER_NAME $IMAGE_NAME
+              #   echo "b"
+              #   docker image prune -fa
+              #   echo "c"
