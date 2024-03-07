@@ -81,7 +81,6 @@ runs:
               port: ${{ inputs.ssh-port }}
               envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
               script_stop: true
-              debug: true
               script: |
                   ENV_FILE_OPTION=""
 
