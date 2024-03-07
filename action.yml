@@ -83,17 +83,25 @@ runs:
               script_stop: true
               script: |
                   if [ "$USE_ENV_FILE" = true ]; then
+                    echo "Hello"
                     ENV_FILE_OPTION="--env-file=$ENV_FILE_NAME"
                   else
+                    echo "World"
                     ENV_FILE_OPTION=""
                   fi
 
-                  container_ids=$(docker ps -qa)
+                  CONTAINER_IDS=$(docker ps -qa)
 
-                  if [ -n "$container_ids" ]; then
+                  if [ -n "$CONTAINER_IDS" ]; then
+                    echo "foo"
                     docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
                   fi
 
-                  docker pull $IMAGE_NAME \
-                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION --name $CONTAINER_NAME $IMAGE_NAME \
-                  && docker image prune -fa
+                 echo "boo"
+                  docker pull $IMAGE_NAME
+
+                  echo "a"
+                  docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION --name $CONTAINER_NAME $IMAGE_NAME
+                  echo "b"
+                  docker image prune -fa
+                  echo "c"
