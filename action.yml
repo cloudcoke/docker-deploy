@@ -50,13 +50,13 @@ runs:
         #   id: login-ecr
         #   uses: aws-actions/amazon-ecr-login@v2
 
-        # - name: Make Docker Image Name
-        #   env:
-        #       registry: ${{ steps.login-ecr.outputs.registry }}
-        #       repository: ${{ inputs.ecr-repository }}
-        #       image_tag: ${{ inputs.ecr-image-tag }}
-        #   run: echo "docker_image=$registry/$repository:$image_tag" >> $GITHUB_ENV
-        #   shell: bash
+        - name: Make Docker Image Name
+          env:
+              registry: ${{ steps.login-ecr.outputs.registry }}
+              repository: ${{ inputs.ecr-repository }}
+              image_tag: ${{ inputs.ecr-image-tag }}
+          run: echo "docker_image=$registry/$repository:$image_tag" >> $GITHUB_ENV
+          shell: bash
 
         # - name: Build, tag, and push docker image to Amazon ECR
         #   env:
@@ -70,7 +70,7 @@ runs:
         - name: Run Server
           uses: appleboy/ssh-action@v1.0.3
           env:
-              DOCKER_IMAGE_NAME: ${{ env.docker_image }}
+              DOCKER_IMAGE: ${{ env.docker_image }}
               DOCKER_CONTAINER_PORT: ${{ inputs.docker-container-port }}
               DOCKER_CONTAINER_NAME: ${{ inputs.docker-container-name }}
               USE_ENV_FILE: ${{ inputs.use-env-file }}
@@ -80,7 +80,7 @@ runs:
               username: ${{ inputs.ssh-username }}
               key: ${{ inputs.ssh-private-key }}
               port: ${{ inputs.ssh-port }}
-              envs: DOCKER_IMAGE_NAME,DOCKER_CONTAINER_PORT,DOCKER_CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
+              envs: DOCKER_IMAGE,DOCKER_CONTAINER_PORT,DOCKER_CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
               script_stop: true
               debug: true
               script: |
@@ -90,10 +90,8 @@ runs:
                     ENV_FILE_OPTION=""
                   fi
 
-                  echo $DOCKER_IMAGE_NAME
-
                   docker stop $(docker ps -qa ) 2>/dev/null
                   docker rm $(docker ps -qa ) 2>/dev/null
-                  docker pull $DOCKER_IMAGE_NAME
-                  docker run -d -p 80:$DOCKER_CONTAINER_PORT --name $DOCKER_CONTAINER_NAME $ENV_FILE_OPTION $DOCKER_IMAGE_NAME
+                  docker pull $DOCKER_IMAGE
+                  docker run -d -p 80:$DOCKER_CONTAINER_PORT --name $DOCKER_CONTAINER_NAME $ENV_FILE_OPTION $DOCKER_IMAGE
                   docker image prune -fa 2>/dev/null
