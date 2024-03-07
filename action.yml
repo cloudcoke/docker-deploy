@@ -63,8 +63,7 @@ runs:
               docker_image: ${{ env.docker_image }}
               dockerfile: ${{ inputs.ecr-dockerfile-name }}
           run: |
-              docker buildx build --platform=linux/amd64 -t $docker_image -f $dockerfile .
-              docker push $docker_image
+              docker buildx build --platform=linux/amd64 --push -t $docker_image -f $dockerfile .
           shell: bash
 
         - name: Run Server
