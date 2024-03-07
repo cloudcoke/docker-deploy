@@ -89,7 +89,7 @@ runs:
                     ENV_FILE_OPTION=""
                   fi
 
-                  docker stop $(docker ps -qa ) 2>/dev/null
+                  docker stop $(docker ps -aq) 2>/dev/null
               #   &&  docker rm $(docker ps -qa ) 2>/dev/null \
               #   && docker pull $IMAGE_NAME
               #   docker run -d -p 80:$CONTAINER_PORT --name $CONTAINER_NAME $ENV_FILE_OPTION $IMAGE_NAME
