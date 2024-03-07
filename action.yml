@@ -95,5 +95,5 @@ runs:
                   fi
 
                   docker pull $IMAGE_NAME \
-                  && docker run -d -p 80:$CONTAINER_PORT --name $CONTAINER_NAME $ENV_FILE_OPTION $IMAGE_NAME \
+                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION --name $CONTAINER_NAME $IMAGE_NAME \
                   && docker image prune -fa
