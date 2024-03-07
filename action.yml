@@ -98,7 +98,7 @@ runs:
                     docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
                   fi
 
-                 echo "boo"
+                  echo "boo"
                   docker pull $IMAGE_NAME
 
                   echo "a"
