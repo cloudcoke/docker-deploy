@@ -76,3 +76,5 @@ runs:
               script_stop: true
               script: |
                   echo $docker_image
+                  echo $docker_container_port
+                  echo $docker_container_name
