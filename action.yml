@@ -85,7 +85,7 @@ runs:
               script: |
                   echo $USE_ENV_FILE
 
-                  if [ "$USE_ENV_FILE" = true ]; then
+                  if [ "$USE_ENV_FILE" = "true" ]; then
                     echo "Hello"
                     ENV_FILE_OPTION="--env-file=$ENV_FILE_NAME"
                   else
