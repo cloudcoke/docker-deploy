@@ -20,6 +20,12 @@ inputs:
         required: true
     docker-container-name:
         required: true
+    use-env-file:
+        required: false
+        default: false
+    env-file-name:
+        required: false
+        default: .env
     ssh-host:
         required: true
     ssh-username:
@@ -67,14 +73,20 @@ runs:
               DOCKER_IMAGE: ${{ env.docker_image }}
               DOCKER_CONTAINER_PORT: ${{ inputs.docker-container-port }}
               DOCKER_CONTAINER_NAME: ${{ inputs.docker-container-name }}
+              USE_ENV_FILE: ${{ inputs.use-env-file }}
+              ENV_FILE_NAME: ${{ inputs.env-file-name }}
           with:
               host: ${{ inputs.ssh-host }}
               username: ${{ inputs.ssh-username }}
               key: ${{ inputs.ssh-private-key }}
               port: ${{ inputs.ssh-port }}
-              envs: DOCKER_IMAGE,DOCKER_CONTAINER_PORT,DOCKER_CONTAINER_NAME
+              envs: DOCKER_IMAGE,DOCKER_CONTAINER_PORT,DOCKER_CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
               script_stop: true
               script: |
-                  echo $DOCKER_IMAGE
-                  echo $DOCKER_CONTAINER_PORT
-                  echo $DOCKER_CONTAINER_NAME
+                  if [ "$USE_ENV_FILE" = true ]; then
+                    ENV_FILE_OPTION="--env-file $ENV_FILE_NAME"
+                  else
+                    ENV_FILE_OPTION=""
+                  fi
+
+                  echo $ENV_FILE_OPTION
