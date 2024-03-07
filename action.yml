@@ -81,7 +81,7 @@ runs:
               key: ${{ inputs.ssh-private-key }}
               port: ${{ inputs.ssh-port }}
               envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
-              script_stop: false
+              script_stop: true
               script: |
                   if [ "$USE_ENV_FILE" = true ]; then
                     ENV_FILE_OPTION="--env-file=$ENV_FILE_NAME"
@@ -89,8 +89,12 @@ runs:
                     ENV_FILE_OPTION=""
                   fi
 
-                  docker stop $(docker ps -aq) 2>/dev/null \
-                  && docker rm $(docker ps -aq) 2>/dev/null \
-                  && docker pull $IMAGE_NAME \
+                  container_ids=$(docker ps -qa)
+
+                  if [ -n "$container_ids" ]; then
+                    docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
+                  fi
+
+                  docker pull $IMAGE_NAME \
                   && docker run -d -p 80:$CONTAINER_PORT --name $CONTAINER_NAME $ENV_FILE_OPTION $IMAGE_NAME \
                   && docker image prune -fa 2>/dev/null
