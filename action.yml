@@ -68,7 +68,7 @@ runs:
         #   shell: bash
 
         - name: Run Server
-          uses: appleboy/ssh-action@v0.1.10
+          uses: appleboy/ssh-action@v1.0.3
           env:
               DOCKER_IMAGE: ${{ env.docker_image }}
               DOCKER_CONTAINER_PORT: ${{ inputs.docker-container-port }}
