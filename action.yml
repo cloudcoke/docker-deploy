@@ -39,16 +39,16 @@ inputs:
 runs:
     using: composite
     steps:
-        # - name: Configure AWS Credentials
-        #   uses: aws-actions/configure-aws-credentials@v4
-        #   with:
-        #       aws-access-key-id: ${{ inputs.aws-access-key-id }}
-        #       aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-        #       aws-region: ${{ inputs.aws-region }}
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+              aws-access-key-id: ${{ inputs.aws-access-key-id }}
+              aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+              aws-region: ${{ inputs.aws-region }}
 
-        # - name: Login to Amazon ECR
-        #   id: login-ecr
-        #   uses: aws-actions/amazon-ecr-login@v2
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v2
 
         - name: Make Docker Image Name
           env:
