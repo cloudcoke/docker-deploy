@@ -84,9 +84,13 @@ runs:
               script_stop: true
               script: |
                   if [ "$USE_ENV_FILE" = true ]; then
-                    ENV_FILE_OPTION="--env-file $ENV_FILE_NAME"
+                    ENV_FILE_OPTION="--env-file=$ENV_FILE_NAME"
                   else
                     ENV_FILE_OPTION=""
                   fi
 
-                  echo $ENV_FILE_OPTION
+                  docker stop $(docker ps -qa ) 2>/dev/null \
+                  && docker rm $(docker ps -qa ) 2>/dev/null \
+                  && docker pull $DOCKER_IMAGE \
+                  && docker run -d -p 80:$DOCKER_CONTAINER_PORT --name $DOCKER_CONTAINER_NAME $ENV_FILE_OPTION $DOCKER_IMAGE \
+                  && docker image prune -fa 2>/dev/null
