@@ -81,7 +81,7 @@ runs:
               key: ${{ inputs.ssh-private-key }}
               port: ${{ inputs.ssh-port }}
               envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
-              debug: true
+              script_stop: true
               script: |
                   if [ "$USE_ENV_FILE" = true ]; then
                     ENV_FILE_OPTION="--env-file=$ENV_FILE_NAME"
