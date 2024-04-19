@@ -77,7 +77,7 @@ runs:
               tags: ${{ env.docker_image }}
               push: true
               cache-from: type=gha
-              cache-to: tpye=gha, mode=max
+              cache-to: type=gha, mode=max
               provenance: false
 
         - name: Run Server
