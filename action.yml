@@ -64,12 +64,12 @@ runs:
           run: echo "docker_image=$registry/$repository:$image_tag" >> $GITHUB_ENV
           shell: bash
 
-        # - name: Expose actions cache variables
-        #   uses: actions/github-script@v7
-        #   with:
-        #       script: |
-        #           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
-        #           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
+        - name: Expose actions cache variables
+          uses: actions/github-script@v7
+          with:
+              script: |
+                  core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+                  core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
         - name: Docker Build & Push
           env:
@@ -80,7 +80,7 @@ runs:
           run: |
               docker buildx create --name docker-build --driver docker-container --use
 
-              docker buildx build --push --platform=$platforms -t $docker_image -f $docker_file_location \
+              docker buildx build --platform=$platforms --push -t $docker_image -f $docker_file_location \
               --cache-to type=gha,mode=max \
               --cache-from type=gha \
               --provenance=false $docker_context
