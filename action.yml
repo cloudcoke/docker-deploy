@@ -67,9 +67,9 @@ runs:
         - name: Expose actions cache variables
           uses: actions/github-script@v7
           with:
-          script: |
-              core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
-              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
+              script: |
+                  core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+                  core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
         - name: Docker Build & Push
           env:
