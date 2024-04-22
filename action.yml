@@ -80,10 +80,11 @@ runs:
           run: |
               docker buildx create --name docker-build --driver docker-container --use
 
-              docker buildx build --platform=$platforms --push -t $docker_image -f $docker_file_location \
+              docker buildx build --platform=$platforms --push -t $docker_image \
               --cache-to type=gha,mode=max \
               --cache-from type=gha \
-              --provenance=false $docker_context
+              --provenance=false \
+              -f $docker_file_location $docker_context
           shell: bash
 
         - name: Run Server
