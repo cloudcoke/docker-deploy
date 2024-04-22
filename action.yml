@@ -64,21 +64,26 @@ runs:
           run: echo "docker_image=$registry/$repository:$image_tag" >> $GITHUB_ENV
           shell: bash
 
-        - name: Setup Buildx
-          uses: docker/setup-buildx-action@v3
+        - name: Expose actions cache variables
+          uses: actions/github-script@v7
           with:
-              platforms: ${{ inputs.docker-build-platforms }}
+          script: |
+              core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
-        - name: Build and Push Docker Image to Amazon ECR
-          uses: docker/build-push-action@v5
-          with:
-              context: ${{ inputs.docker-context }}
-              file: ${{ inputs.docker-file-location }}
-              tags: ${{ env.docker_image }}
-              push: true
-              cache-from: type=gha
-              cache-to: type=gha, mode=max
-              provenance: false
+        - name: Docker Build & Push
+          env:
+              platforms: ${{ inputs.docker-build-platforms }}
+              docker_image: ${{ env.docker_image }}
+              docker_file_location: ${{ inputs.docker_file_location }}
+              docker_context: ${{ inputs.docker_context }}
+          run: |
+              docker buildx create --name docker-build --driver docker-container --use
+
+              docker buildx build --push --platform=$platforms -t $docker_image -f $docker_file_location \
+              --cache-to type=gha,mode=max \
+              --cache-from type=gha \
+              --provenance=false $docker_context
 
         - name: Run Server
           uses: appleboy/ssh-action@v1.0.3
