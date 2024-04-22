@@ -75,8 +75,8 @@ runs:
           env:
               platforms: ${{ inputs.docker-build-platforms }}
               docker_image: ${{ env.docker_image }}
-              docker_file_location: ${{ inputs.docker_file_location }}
-              docker_context: ${{ inputs.docker_context }}
+              docker_file_location: ${{ inputs.docker-file-location }}
+              docker_context: ${{ inputs.docker-context }}
           run: |
               docker buildx create --name docker-build --driver docker-container --use
 
