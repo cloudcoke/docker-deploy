@@ -25,6 +25,19 @@
       # For example: prod.env
       env-file-name: ""
 
+      # Whether to enable awslogs
+      # Default: false
+      # For example: true|false
+      enable-awslogs: ""
+
+      # Region where awslog will be located
+      # Default: ap-northeast-2
+      awslogs-region: ""
+
+      # AWSLogs group name
+      # Default: ec2-docker-log-group
+      awslogs-group: ""
+
       # SSH host address
       # For example: 8.8.8.8
       ssh-host: ""
