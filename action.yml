@@ -13,6 +13,15 @@ inputs:
     env-file-name:
         required: false
         default: .env
+    enable-awslogs:
+        required: false
+        default: false
+    awslogs-region:
+        required: false
+        default: ap-northeast-2
+    awslogs-group:
+        required: false
+        default: ec2-docker-log-group
     ssh-host:
         required: true
     ssh-username:
@@ -34,18 +43,26 @@ runs:
               CONTAINER_NAME: ${{ inputs.container-name }}
               USE_ENV_FILE: ${{ inputs.use-env-file }}
               ENV_FILE_NAME: ${{ inputs.env-file-name }}
+              ENABLE_AWSLOGS: ${{ inputs.enable-awslogs }}
+              AWSLOGS_REGION: ${{ inputs.awslogs-region }}
+              AWSLOGS_GROUP: ${{ inputs.awslogs-group }}
           with:
               host: ${{ inputs.ssh-host }}
               username: ${{ inputs.ssh-username }}
               key: ${{ inputs.ssh-private-key }}
               port: ${{ inputs.ssh-port }}
-              envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME
+              envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME,ENABLE_AWSLOGS,AWSLOGS_REGION,AWSLOGS_GROUP
               script_stop: true
               script: |
                   ENV_FILE_OPTION=""
+                  AWSLOGS_SETTING=""
 
                   if [ "$USE_ENV_FILE" = "true" ]; then
                     ENV_FILE_OPTION="--env-file=$ENV_FILE_NAME"
+                  fi
+
+                  if [ "$ENABLE_AWSLOGS" = "true" ]; then
+                    AWSLOGS_SETTING="--log-driver=awslogs --log-opt awslogs-region=$AWSLOGS_REGION --log-opt awslogs-group=$AWSLOGS_GROUP --log-opt awslogs-create-group=true"
                   fi
 
                   CONTAINER_IDS=$(docker ps -qa)
@@ -55,5 +72,5 @@ runs:
                   fi
 
                   docker pull $IMAGE_NAME \
-                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION --name $CONTAINER_NAME $IMAGE_NAME \
+                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION $AWSLOGS_SETTING --name $CONTAINER_NAME $IMAGE_NAME \
                   && docker image prune -fa
