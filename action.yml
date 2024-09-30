@@ -76,5 +76,5 @@ runs:
                   fi
 
                   docker pull $IMAGE_NAME \
-                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION $AWSLOGS_SETTING --name $CONTAINER_NAME $IMAGE_NAME $OTHER_OPTIONS \
+                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION $AWSLOGS_SETTING --name $CONTAINER_NAME $OTHER_OPTIONS $IMAGE_NAME \
                   && docker image prune -fa
