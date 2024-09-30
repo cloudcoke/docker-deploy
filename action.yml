@@ -22,6 +22,9 @@ inputs:
     awslogs-group:
         required: false
         default: ec2-docker-log-group
+    other-options:
+        required: false
+        default: ""
     ssh-host:
         required: true
     ssh-username:
@@ -46,12 +49,13 @@ runs:
               ENABLE_AWSLOGS: ${{ inputs.enable-awslogs }}
               AWSLOGS_REGION: ${{ inputs.awslogs-region }}
               AWSLOGS_GROUP: ${{ inputs.awslogs-group }}
+              OTHER_OPTIONS: ${{ inputs.other-options }}
           with:
               host: ${{ inputs.ssh-host }}
               username: ${{ inputs.ssh-username }}
               key: ${{ inputs.ssh-private-key }}
               port: ${{ inputs.ssh-port }}
-              envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME,ENABLE_AWSLOGS,AWSLOGS_REGION,AWSLOGS_GROUP
+              envs: IMAGE_NAME,CONTAINER_PORT,CONTAINER_NAME,USE_ENV_FILE,ENV_FILE_NAME,ENABLE_AWSLOGS,AWSLOGS_REGION,AWSLOGS_GROUP,OTHER_OPTIONS
               script_stop: true
               script: |
                   ENV_FILE_OPTION=""
@@ -72,5 +76,5 @@ runs:
                   fi
 
                   docker pull $IMAGE_NAME \
-                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION $AWSLOGS_SETTING --name $CONTAINER_NAME $IMAGE_NAME \
+                  && docker run -d -p 80:$CONTAINER_PORT $ENV_FILE_OPTION $AWSLOGS_SETTING --name $CONTAINER_NAME $IMAGE_NAME $OTHER_OPTIONS \
                   && docker image prune -fa
